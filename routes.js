@@ -9,9 +9,12 @@ router.post('/student', async (req, res) => {
     res.send('Your details are saved successfully.');
 });
 
-router.get('/student', async (req, res) => {
-    const students = await getAllStudents();
-    res.send(students);
-});
+// router.get('/student', async (req, res) => {
+//     const students = await getAllStudents();
+//     res.send(students);
+// });
 
+router.get('/ping', (req, res) => {
+    res.send('I am up :)');
+})
 export default router;
