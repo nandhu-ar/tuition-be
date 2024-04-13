@@ -1,19 +1,23 @@
 import { MongoClient } from "mongodb";
 
 // Connection URI
-const uri =
-  "mongodb+srv://dbuser:7sR4GPP4DM4ANAwY@clusterm0.cavquww.mongodb.net/?retryWrites=true&w=majority&appName=ClusterM0";
-const dbName = "ClusterM0";
-const collectionName = "student";
+let dbName = process.env.DB_NAME;
+let collectionName = process.env.COLLECTION;
 
 // Create a new MongoClient
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+let client;
+
+async function createClient() {
+  const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_BASEPATH}/?retryWrites=true&w=majority&appName=${process.env.DB_NAME}`;
+  console.log(uri);
+  dbName = process.env.DB_NAME;
+  collectionName = process.env.COLLECTION;
+  client = new MongoClient(uri);
+}
 
 async function connectToDatabase() {
   try {
+    if (!client) await createClient();
     await client.connect();
     console.log("Connected to MongoDB");
   } catch (error) {
@@ -53,11 +57,10 @@ export async function getAllStudents() {
     const result = [];
     for await (const doc of cursor) {
       result.push(doc);
-      }
-      console.log(result);
+    }
     return result;
   } catch (error) {
-    console.log("Unable to insert data to db", data, error);
+    console.log("Unable to read data from db", error);
   } finally {
     await disconnectDB();
   }
